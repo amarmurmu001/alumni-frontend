@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { fetchApi } from '../app/utils/api';  // If utils is in the frontend root
+import { fetchApi } from './utils/api';  // Update this line
 
 export default function Home() {
   return (
@@ -79,7 +79,7 @@ function BenefitItem({ text }) {
 
 async function fetchUserData() {
   try {
-    const userData = await fetchApi('/api/user/profile');
+    const userData = await fetchApi('user/profile');
     // Handle the user data
   } catch (error) {
     console.error('Error fetching user data:', error);

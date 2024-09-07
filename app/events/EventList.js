@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchApi } from '../utils/api';
+import { api } from '../utils/api';
 import Link from 'next/link';
 
 export default function EventList() {
@@ -20,7 +20,13 @@ export default function EventList() {
 
   const fetchEvents = async (page, sort, order, filter) => {
     try {
-      const data = await fetchApi(`/api/events?page=${page}&limit=10&sortBy=${sort}&sortOrder=${order}&filterDate=${filter}`);
+      const data = await api.events.getEvents({
+        page,
+        limit: 10,
+        sortBy: sort,
+        sortOrder: order,
+        filterDate: filter
+      });
       setEvents(data.events);
       setTotalPages(data.totalPages);
       setLoading(false);

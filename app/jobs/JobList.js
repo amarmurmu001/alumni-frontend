@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchApi } from '../utils/api';
+import { api } from '../utils/api';
 import Link from 'next/link';
 
 export default function JobList() {
@@ -15,7 +15,7 @@ export default function JobList() {
 
   const fetchJobs = async () => {
     try {
-      const data = await fetchApi('/api/jobs');
+      const data = await api.jobs.getJobs();
       setJobs(data);
       setLoading(false);
     } catch (error) {

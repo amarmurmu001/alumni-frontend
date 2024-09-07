@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '../services/api';
+import { api } from '../utils/api';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +16,11 @@ export default function Auth() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    // Clear any existing token when the auth page is loaded
+    localStorage.removeItem('token');
+  }, []);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -31,15 +36,14 @@ export default function Auth() {
     setMessage('');
 
     try {
+      let data;
       if (isLogin) {
-        const data = await api.auth.login({ email, password });
-        localStorage.setItem('token', data.token);
-        router.push('/dashboard');
+        data = await api.auth.login(email, password);
       } else {
-        const data = await api.auth.register({ email, password, firstName, lastName, graduationYear, major });
-        localStorage.setItem('token', data.token);
-        router.push('/dashboard');
+        data = await api.auth.register({ email, password, firstName, lastName, graduationYear, major });
       }
+      localStorage.setItem('token', data.token);
+      router.push('/dashboard');
     } catch (err) {
       console.error('Authentication error:', err);
       setError('Authentication failed. Please try again.');
@@ -51,7 +55,7 @@ export default function Auth() {
     setMessage('');
 
     try {
-      await api.auth.forgotPassword({ email });
+      await api.auth.forgotPassword(email);
       setMessage('Password reset email sent. Please check your inbox.');
     } catch (err) {
       setError('Failed to send password reset email. Please try again.');
