@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../utils/api';
 
+// Define an interface for the user object
+interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  graduationYear: string;
+  major: string;
+}
+
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
