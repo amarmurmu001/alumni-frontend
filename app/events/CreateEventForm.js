@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Toast from '../components/Toast';
+import { api } from '../utils/api';
+import Toast from '../components/Toast'; // Make sure you have this component
 
 export default function CreateEventForm({ onClose, onEventCreated }) {
   const [eventData, setEventData] = useState({
@@ -10,8 +11,9 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
     location: '',
     description: '',
   });
-  const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showToast, setShowToast] = useState(false); // Add this line
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,44 +23,20 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
     try {
-      const token = localStorage.getItem('token');
-      console.log('Token from localStorage:', token);
-
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      console.log('Response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create event');
-      }
-
-      const data = await response.json();
-      console.log('Event created:', data);
-
-      setShowToast(true);
-      if (onEventCreated) {
-        onEventCreated();
-      }
+      const createdEvent = await api.events.createEvent(eventData);
+      console.log('Event created:', createdEvent);
+      onEventCreated();
+      setShowToast(true); // Add this line
       setTimeout(() => {
+        setShowToast(false);
         onClose();
       }, 3000);
     } catch (error) {
       console.error('Error creating event:', error);
-      // Show an error toast here
+      setError('Failed to create event. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -117,6 +95,8 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
               required
             ></textarea>
           </div>
+          
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           
           <div className="flex justify-end space-x-3 mt-6">
             <button

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import CreateJobForm from './CreateJobForm';
 import JobList from './JobList';
+import CreateJobForm from './CreateJobForm';
 
 export default function Jobs() {
   const [showJobForm, setShowJobForm] = useState(false);
@@ -13,27 +13,25 @@ export default function Jobs() {
   };
 
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] min-h-screen gap-16 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-16 items-center px-8 py-16">
-        <section className="text-center max-w-3xl">
-          <h1 className="text-5xl font-bold mb-4">Job Opportunities</h1>
-          <p className="text-xl text-gray-400 mb-8">Explore career opportunities or post job openings for fellow alumni</p>
-          <button
-            onClick={() => setShowJobForm(true)}
-            className="rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 transition-colors"
-          >
-            Post a Job
-          </button>
-        </section>
-
-        <JobList key={refreshKey} />
-        
-      </main>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-4">Job Opportunities</h1>
+      <button
+        onClick={() => setShowJobForm(true)}
+        className="mb-4 bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Post a Job
+      </button>
+      <JobList key={refreshKey} />
       {showJobForm && (
-        <CreateJobForm
-          onClose={() => setShowJobForm(false)}
-          onJobCreated={handleJobCreated}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Create New Job</h2>
+            <CreateJobForm
+              onClose={() => setShowJobForm(false)}
+              onJobCreated={handleJobCreated}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
