@@ -6,6 +6,12 @@ const fetchOptions: RequestInit = {
   credentials: 'include',
 };
 
+// Define LoginCredentials type
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
@@ -107,7 +113,7 @@ export const api = {
 };
 
 export async function login(credentials: LoginCredentials) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
