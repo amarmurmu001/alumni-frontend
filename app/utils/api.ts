@@ -2,6 +2,10 @@ import { getToken } from './auth'; // Implement this function to retrieve the to
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
+const fetchOptions: RequestInit = {
+  credentials: 'include',
+};
+
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
