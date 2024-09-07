@@ -105,3 +105,20 @@ export const api = {
     },
   },
 };
+
+export async function login(credentials: LoginCredentials) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    throw new Error('Login failed');
+  }
+
+  return response.json();
+}
