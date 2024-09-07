@@ -35,30 +35,44 @@ export default function EventList() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div>
-      <div className="mb-4 p-4 flex items-center justify-between rounded-lg">
-        <select 
-          value={sortBy} 
-          onChange={(e) => setSortBy(e.target.value)} 
-          className="mr-2 bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-        >
-          <option value="date">Date</option>
-          <option value="title">Title</option>
-        </select>
-        <select 
-          value={sortOrder} 
-          onChange={(e) => setSortOrder(e.target.value)} 
-          className="mr-2 bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-        >
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
-        <input
-          type="date"
-          value={filterDate}
-          onChange={(e) => setFilterDate(e.target.value)}
-          className="mr-2 bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-        />
+    <div className="bg-black min-h-screen p-4">
+      <div className="mb-6 p-4 bg-gray-900 rounded-lg flex flex-wrap items-center gap-4">
+        <div className="flex items-center">
+          <label htmlFor="sortBy" className="text-white mr-2">Sort by:</label>
+          <select 
+            id="sortBy"
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value)} 
+            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
+          >
+            <option value="date">Date</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
+        
+        <div className="flex items-center">
+          <label htmlFor="sortOrder" className="text-white mr-2">Order:</label>
+          <select 
+            id="sortOrder"
+            value={sortOrder} 
+            onChange={(e) => setSortOrder(e.target.value)} 
+            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+        
+        <div className="flex items-center">
+          <label htmlFor="filterDate" className="text-white mr-2">Filter by date:</label>
+          <input
+            id="filterDate"
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
+          />
+        </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
         {events.map((event) => (

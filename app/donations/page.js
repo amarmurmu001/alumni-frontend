@@ -1,5 +1,4 @@
-import Link from "next/link";
-import Image from "next/image";
+import DonationForm from './DonationForm';
 
 export default function Donations() {
   return (
@@ -10,8 +9,7 @@ export default function Donations() {
           <p className="text-xl text-gray-400 mb-8">Support your alma mater and contribute to its growth and development</p>
         </section>
 
-        {/* Add donation form or payment integration here */}
-        
+        <DonationForm />
       </main>
     </div>
   );

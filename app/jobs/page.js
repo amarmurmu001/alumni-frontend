@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import CreateJobForm from './CreateJobForm';
+import JobList from './JobList';
 
 export default function Jobs() {
   const [showJobForm, setShowJobForm] = useState(false);
@@ -25,7 +26,7 @@ export default function Jobs() {
           </button>
         </section>
 
-        {/* Add JobList component here */}
+        <JobList key={refreshKey} />
         
       </main>
       {showJobForm && (
