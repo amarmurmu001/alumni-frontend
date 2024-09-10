@@ -41,7 +41,7 @@ export default function EventList() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="bg-black min-h-screen p-4">
+    <div className=" min-h-screen p-4">
       <div className="mb-6 p-4 bg-gray-900 rounded-lg flex flex-wrap items-center gap-4">
         <div className="flex items-center">
           <label htmlFor="sortBy" className="text-white mr-2">Sort by:</label>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '../utils/api';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -39,13 +40,28 @@ export default function Auth() {
       let data;
       if (isLogin) {
         data = await api.auth.login(email, password);
+        toast.success('Logged in successfully!');
       } else {
         data = await api.auth.register({ email, password, firstName, lastName, graduationYear, major });
+        toast.success('Registered successfully!');
       }
       localStorage.setItem('token', data.token);
       router.push('/dashboard');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Authentication error:', err);
+      if (isLogin) {
+        if (err.message === 'User not found') {
+          toast.error('User not registered. Please sign up.');
+        } else {
+          toast.error('Login failed. Please check your credentials.');
+        }
+      } else {
+        if (err.message === 'Email already registered') {
+          toast.error('Email already registered. Please use a different email.');
+        } else {
+          toast.error('Registration failed. Please try again.');
+        }
+      }
       setError('Authentication failed. Please try again.');
     }
   };
@@ -56,14 +72,15 @@ export default function Auth() {
 
     try {
       await api.auth.forgotPassword(email);
-      setMessage('Password reset email sent. Please check your inbox.');
+      toast.success('Password reset email sent. Please check your inbox.');
     } catch (err) {
-      setError('Failed to send password reset email. Please try again.');
+      toast.error('Failed to send password reset email. Please try again.');
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="max-w-md w-full space-y-8">
         <h2 className="mt-6 text-center text-3xl font-extrabold">
           {isLogin ? 'Sign in to your account' : 'Create a new account'}
