@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import Link from "next/link";
+import Navigation from "./components/Navigation.js";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,34 +24,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased text-white flex flex-col min-h-screen`}
       >
-        <header className="border-b border-gray-800">
-          <nav className="container mx-auto flex justify-between items-center py-4 px-6">
-            <Link href="/" className="text-2xl font-bold text-white hover:text-gray-300">
-              Alumni Association
-            </Link>
-            <ul className="flex space-x-6">
-              <li>
-                <Link href="/dashboard" className="text-gray-300 hover:text-white">
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link href="/events" className="text-gray-300 hover:text-white">
-                  Events
-                </Link>
-              </li>
-              <li>
-                <Link href="/jobs" className="text-gray-300 hover:text-white">
-                  Jobs
-                </Link>
-              </li>
-              <li>
-                <Link href="/donations" className="text-gray-300 hover:text-white">
-                  Donations
-                </Link>
-              </li>
-            </ul>
-          </nav>
+        <header>
+          <Navigation />
         </header>
         <main className="flex-grow container mx-auto px-6 py-8">
           {children}
