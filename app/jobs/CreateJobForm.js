@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { api } from '../utils/api';
+import api from '../utils/api';
 import Toast from '../components/Toast';
 
 export default function CreateJobForm({ onClose, onJobCreated }) {
@@ -46,83 +46,132 @@ export default function CreateJobForm({ onClose, onJobCreated }) {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="title"
-          value={jobData.title}
-          onChange={handleChange}
-          placeholder="Job Title"
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="company"
-          value={jobData.company}
-          onChange={handleChange}
-          placeholder="Company"
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="location"
-          value={jobData.location}
-          onChange={handleChange}
-          placeholder="Location"
-          required
-          className="w-full p-2 border rounded"
-        />
-        <textarea
-          name="description"
-          value={jobData.description}
-          onChange={handleChange}
-          placeholder="Job Description"
-          required
-          className="w-full p-2 border rounded"
-        ></textarea>
-        <textarea
-          name="requirements"
-          value={jobData.requirements}
-          onChange={handleChange}
-          placeholder="Job Requirements"
-          required
-          className="w-full p-2 border rounded"
-        ></textarea>
-        <input
-          type="text"
-          name="salary"
-          value={jobData.salary}
-          onChange={handleChange}
-          placeholder="Salary"
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="date"
-          name="applicationDeadline"
-          value={jobData.applicationDeadline}
-          onChange={handleChange}
-          placeholder="Application Deadline"
-          required
-          className="w-full p-2 border rounded"
-        />
-        {error && <p className="text-red-500">{error}</p>}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {isLoading ? 'Creating...' : 'Create Job'}
-        </button>
-      </form>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <div className="bg-black p-6 rounded-lg w-full max-w-2xl border border-gray-800 max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-black z-10 pb-4 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-white">Create New Job</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white"
+            aria-label="Close"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-1">Job Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={jobData.title}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-1">Company</label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              value={jobData.company}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={jobData.location}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">Job Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={jobData.description}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label htmlFor="requirements" className="block text-sm font-medium text-gray-300 mb-1">Requirements</label>
+            <textarea
+              id="requirements"
+              name="requirements"
+              value={jobData.requirements}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label htmlFor="salary" className="block text-sm font-medium text-gray-300 mb-1">Salary</label>
+            <input
+              type="text"
+              id="salary"
+              name="salary"
+              value={jobData.salary}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="applicationDeadline" className="block text-sm font-medium text-gray-300 mb-1">Application Deadline</label>
+            <input
+              type="date"
+              id="applicationDeadline"
+              name="applicationDeadline"
+              value={jobData.applicationDeadline}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          
+          <div className="flex justify-end space-x-3 mt-6 sticky bottom-0 bg-black pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-black border border-gray-800 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creating...' : 'Create Job'}
+            </button>
+          </div>
+        </form>
+      </div>
       {showToast && (
         <Toast
           message="Job posted successfully!"
           onClose={() => setShowToast(false)}
         />
       )}
-    </>
+    </div>
   );
 }
