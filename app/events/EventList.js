@@ -19,6 +19,8 @@ export default function EventList() {
   }, [currentPage, sortBy, sortOrder, filterDate]);
 
   const fetchEvents = async (page, sort, order, filter) => {
+    setLoading(true);
+    setError(null);
     try {
       const data = await api.events.getEvents({
         page,
@@ -27,12 +29,12 @@ export default function EventList() {
         sortOrder: order,
         filterDate: filter
       });
-      setEvents(data.events);
-      setTotalPages(data.totalPages);
-      setLoading(false);
+      setEvents(data.events || []);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching events:', error);
       setError('Failed to fetch events. Please try again later.');
+    } finally {
       setLoading(false);
     }
   };

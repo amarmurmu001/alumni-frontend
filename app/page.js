@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { fetchApi } from './utils/api';  // Update this line
+import { api } from './utils/api';  // Updated import statement
 
 export default function Home() {
   return (
@@ -77,9 +77,10 @@ function BenefitItem({ text }) {
   );
 }
 
+// Update this function to use the api object
 async function fetchUserData() {
   try {
-    const userData = await fetchApi('user/profile');
+    const userData = await api.user.getProfile();
     // Handle the user data
   } catch (error) {
     console.error('Error fetching user data:', error);

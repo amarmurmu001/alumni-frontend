@@ -2,68 +2,85 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '../utils/api';
+import { api } from '@/app/utils/api';
+import EventList from '@/app/events/EventList';
 
 export default function Dashboard() {
+  const [dashboardData, setDashboardData] = useState(null);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/auth');
-          return;
-        }
+        const [events, userData] = await Promise.all([
+          api.events.getEvents({ page: 1, limit: 3, sortBy: 'date', sortOrder: 'desc' }),
+          api.user.getProfile().catch(error => {
+            if (error.message === 'Unauthorized') {
+              router.push('/auth');
+              return null;
+            }
+            throw error;
+          })
+        ]);
 
-        const userData = await api.user.getProfile(token);
-        setUser(userData);
+        if (userData) {
+          setDashboardData({ events });
+          setUser(userData);
+        }
       } catch (error) {
-        console.error('Error fetching user data:', error);
-        router.push('/auth');
+        console.error('Error fetching dashboard data:', error);
+        setError('Failed to load dashboard data. Please try again later.');
       }
     };
 
-    fetchUserData();
+    fetchDashboardData();
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    router.push('/auth');
+  const handleLogout = async () => {
+    try {
+      await api.auth.logout();
+      router.push('/auth');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setError(`Logout failed: ${error.message}. Please try again or contact support if the issue persists.`);
+    }
   };
 
-  if (!user) {
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
+  if (!dashboardData || !user) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Welcome, {user.firstName}!</h1>
+      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <div className=" shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-2xl font-bold mb-4">User Profile</h2>
+        <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Graduation Year:</strong> {user.graduationYear}</p>
+        <p><strong>Major:</strong> {user.major}</p>
+        {user.currentJob && <p><strong>Current Job:</strong> {user.currentJob}</p>}
+        {user.location && <p><strong>Location:</strong> {user.location}</p>}
         <button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => router.push('/profile/edit')}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
         >
-          Logout
+          Edit Profile
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Add dashboard widgets here */}
-        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Recent Events</h2>
-          {/* Add recent events content */}
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Job Opportunities</h2>
-          {/* Add job opportunities content */}
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Donation Progress</h2>
-          {/* Add donation progress content */}
-        </div>
-      </div>
+     
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
+      >
+        Logout
+      </button>
     </div>
   );
 }

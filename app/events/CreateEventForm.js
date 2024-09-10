@@ -13,7 +13,7 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showToast, setShowToast] = useState(false); // Add this line
+  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +29,7 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
       const createdEvent = await api.events.createEvent(eventData);
       console.log('Event created:', createdEvent);
       onEventCreated();
-      setShowToast(true); // Add this line
+      setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
         onClose();

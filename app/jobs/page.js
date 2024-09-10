@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import api from '../utils/api';
+import { api } from '../utils/api';
+import JobList from './JobList';
 import CreateJobForm from './CreateJobForm';
 
 export default function JobsPage() {
@@ -48,23 +49,19 @@ export default function JobsPage() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs.map((job) => (
-            <div key={job.id} className="bg-gray-800 p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-2">{job.title}</h2>
-              <p className="text-gray-300 mb-2">{job.company}</p>
-              <p className="text-gray-400 mb-4">{job.location}</p>
-              <p className="text-sm text-gray-400">Posted on: {new Date(job.createdAt).toLocaleDateString()}</p>
-            </div>
-          ))}
-        </div>
+        <JobList jobs={jobs} />
       )}
 
       {isCreateFormOpen && (
-        <CreateJobForm 
-          onJobCreated={handleJobCreated} 
-          onClose={() => setIsCreateFormOpen(false)}
-        />
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h2 className="text-2xl font-bold mb-4">Create New Job</h2>
+            <CreateJobForm 
+              onJobCreated={handleJobCreated} 
+              onClose={() => setIsCreateFormOpen(false)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
