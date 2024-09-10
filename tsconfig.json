@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "app/reset-password/[token]/page.js"  ],
   "exclude": [
     "node_modules"
   ]

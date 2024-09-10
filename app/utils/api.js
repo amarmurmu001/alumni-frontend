@@ -52,6 +52,20 @@ export const api = {
         throw error;
       }
     },
+    resetPassword: async (token, newPassword) => {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token, newPassword }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Password reset failed');
+      }
+      return response.json();
+    },
   },
   user: {
     getProfile: async () => {

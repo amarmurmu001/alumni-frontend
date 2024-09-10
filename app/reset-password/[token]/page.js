@@ -2,33 +2,33 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '../../services/api';
+import { api } from '../../utils/api';
 
-export default function ResetPassword({ params }: { params: { token: string } }) {
+export default function ResetPassword({ params }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     try {
-      await api.auth.resetPassword(params.token, { password });
-      setMessage('Password has been reset successfully');
+      await api.auth.resetPassword(params.token, password);
+      setSuccess(true);
       setTimeout(() => router.push('/auth'), 3000);
     } catch (err) {
       setError('Failed to reset password. Please try again.');
     }
   };
+
+  if (success) {
+    return <div>Password reset successful. Redirecting to login...</div>;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -63,10 +63,7 @@ export default function ResetPassword({ params }: { params: { token: string } })
               />
             </div>
           </div>
-
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-          {message && <p className="text-green-500 text-sm mt-2">{message}</p>}
-
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div>
             <button
               type="submit"
