@@ -22,15 +22,23 @@ export default function Dashboard() {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
+        console.log('Token from localStorage:', token);
         if (!token) {
+          console.log('No token found, redirecting to auth');
           router.push('/auth');
           return;
         }
 
+        console.log('Fetching user profile...');
         const userData = await api.user.getProfile();
+        console.log('User data received:', userData);
+        if (Object.keys(userData).length === 0) {
+          throw new Error('Empty user data received');
+        }
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        localStorage.removeItem('token');
         router.push('/auth');
       } finally {
         setLoading(false);
@@ -52,6 +60,8 @@ export default function Dashboard() {
   if (!user) {
     return null;
   }
+
+  console.log('Rendering dashboard, user:', user); // New log
 
   return (
     <div className="container mx-auto px-4 py-8">

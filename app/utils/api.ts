@@ -13,11 +13,13 @@ interface LoginCredentials {
 }
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
+  const token = localStorage.getItem('token');
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : '',
       ...options.headers,
     },
   });
@@ -59,13 +61,7 @@ export const api = {
   },
   user: {
     getProfile: async () => {
-      const token = localStorage.getItem('token');
-      return fetchApi('/user/profile', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      return fetchApi('/user/profile');
     },
   },
   events: {
@@ -114,6 +110,7 @@ export const api = {
 };
 
 export async function login(credentials: LoginCredentials) {
+  console.log('Attempting login with:', credentials);
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {
@@ -123,9 +120,19 @@ export async function login(credentials: LoginCredentials) {
     credentials: 'include',
   });
 
+  console.log('Login response status:', response.status);
+
   if (!response.ok) {
-    throw new Error('Login failed');
+    const errorData = await response.json();
+    console.error('Login error:', errorData);
+    throw new Error(errorData.message || 'Login failed');
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('Login successful, received data:', data);
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+  }
+
+  return data;
 }

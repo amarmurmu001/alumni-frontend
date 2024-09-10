@@ -25,12 +25,30 @@ async function fetchApi(endpoint: string, options: RequestInit = {}) {
 export const api = {
   auth: {
     register: (data: any) => fetchApi('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
-    login: (data: any) => fetchApi('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
+    login: async (data: any) => {
+      const response = await fetchApi('/auth/login', { method: 'POST', body: JSON.stringify(data) });
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+      }
+      return response;
+    },
     forgotPassword: (data: any) => fetchApi('/auth/forgot-password', { method: 'POST', body: JSON.stringify(data) }),
     resetPassword: (token: string, data: any) => fetchApi(`/auth/reset-password/${token}`, { method: 'POST', body: JSON.stringify(data) }),
   },
   user: {
-    getProfile: () => fetchApi('/user/profile'),
+    getProfile: async () => {
+      try {
+        const data = await fetchApi('/user/profile');
+        console.log('Profile data from API:', data); // Existing log
+        if (Object.keys(data).length === 0) {
+          throw new Error('Empty user data received');
+        }
+        return data;
+      } catch (error) {
+        console.error('Error in getProfile:', error); // Existing log
+        throw error;
+      }
+    },
   },
   // ... other API methods ...
 };
