@@ -19,19 +19,19 @@ export default function Home() {
 
         <section className="grid md:grid-cols-3 gap-8 w-full max-w-5xl">
           <FeatureCard
-            icon="/icons/calendar.svg"
+            // icon="/icons/calendar.svg"
             title="Upcoming Events"
             description="Discover and participate in alumni events, reunions, and networking opportunities."
             link="/events"
           />
           <FeatureCard
-            icon="/icons/briefcase.svg"
+            // icon="/icons/briefcase.svg"
             title="Job Opportunities"
             description="Explore career opportunities or post job openings for fellow alumni."
             link="/jobs"
           />
           <FeatureCard
-            icon="/icons/heart.svg"
+            // icon="/icons/heart.svg"
             title="Make a Donation"
             description="Support your alma mater and contribute to its growth and development."
             link="/donations"
@@ -56,7 +56,7 @@ export default function Home() {
 function FeatureCard({ icon, title, description, link }) {
   return (
     <div className="border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors">
-      <Image src={icon} alt="" width={24} height={24} className="mb-4" />
+      {/* <Image src={icon} alt="" width={24} height={24} className="mb-4" /> */}
       <h2 className="text-2xl font-bold mb-2">{title}</h2>
       <p className="text-gray-400 mb-4">{description}</p>
       <Link href={link} className="text-blue-500 hover:text-blue-400">
