@@ -68,7 +68,7 @@ In the project directory, you can run:
 
 ## Contributing
 
-We welcome contributions! Please see our `CONTRIBUTING.md` file for details on how to submit pull requests, report issues, and suggest improvements.
+We welcome contributions! Feel free to submit pull requests, report issues, and suggest improvements.
 
 ## Troubleshooting
 
