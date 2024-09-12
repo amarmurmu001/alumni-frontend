@@ -1,11 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CreateEventButton from './CreateEventButton';
 import EventList from './EventList';
+import { useRouter } from 'next/navigation';
 
 export default function Events() {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleEventCreated = () => {
     setRefreshKey(prevKey => prevKey + 1);
@@ -17,7 +25,7 @@ export default function Events() {
         <section className="text-center max-w-3xl">
           <h1 className="text-5xl font-bold mb-4">Upcoming Events</h1>
           <p className="text-xl text-gray-400 mb-8">Discover and participate in alumni events, reunions, and networking opportunities</p>
-          <CreateEventButton onEventCreated={handleEventCreated} />
+          {isLoggedIn && <CreateEventButton onEventCreated={handleEventCreated} />}
         </section>
 
         <EventList key={refreshKey} />
