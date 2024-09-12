@@ -122,9 +122,8 @@ export const api = {
     getJobDetails: (jobId) => fetchApi(`/jobs/${jobId}`),
   },
   events: {
-    getEvents: async ({ page, limit, sortBy, sortOrder, filterDate }) => {
-      const formattedFilterDate = filterDate ? new Date(filterDate).toISOString().split('T')[0] : '';
-      return fetchApi(`/events?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}&filterDate=${formattedFilterDate}`);
+    getEvents: async ({ page, limit }) => {
+      return fetchApi(`/events?page=${page}&limit=${limit}`);
     },
     createEvent: (eventData) => fetchApi('/events', { method: 'POST', body: JSON.stringify(eventData) }),
   },

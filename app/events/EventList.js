@@ -10,24 +10,18 @@ export default function EventList() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [sortBy, setSortBy] = useState('date');
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
-    fetchEvents(currentPage, sortBy, sortOrder, filterDate);
-  }, [currentPage, sortBy, sortOrder, filterDate]);
+    fetchEvents(currentPage);
+  }, [currentPage]);
 
-  const fetchEvents = async (page, sort, order, filter) => {
+  const fetchEvents = async (page) => {
     setLoading(true);
     setError(null);
     try {
       const data = await api.events.getEvents({
         page,
-        limit: 10,
-        sortBy: sort,
-        sortOrder: order,
-        filterDate: filter
+        limit: 10
       });
       setEvents(data.events || []);
       setTotalPages(data.totalPages || 1);
@@ -43,45 +37,7 @@ export default function EventList() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className=" min-h-screen p-4">
-      <div className="mb-6 p-4 bg-gray-900 rounded-lg flex flex-wrap items-center gap-4">
-        <div className="flex items-center">
-          <label htmlFor="sortBy" className="text-white mr-2">Sort by:</label>
-          <select 
-            id="sortBy"
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value)} 
-            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-          >
-            <option value="date">Date</option>
-            <option value="title">Title</option>
-          </select>
-        </div>
-        
-        <div className="flex items-center">
-          <label htmlFor="sortOrder" className="text-white mr-2">Order:</label>
-          <select 
-            id="sortOrder"
-            value={sortOrder} 
-            onChange={(e) => setSortOrder(e.target.value)} 
-            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </div>
-        
-        <div className="flex items-center">
-          <label htmlFor="filterDate" className="text-white mr-2">Filter by date:</label>
-          <input
-            id="filterDate"
-            type="date"
-            value={filterDate}
-            onChange={(e) => setFilterDate(e.target.value)}
-            className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
-          />
-        </div>
-      </div>
+    <div className="min-h-screen p-4">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
         {events.map((event) => (
           <EventCard key={event._id} event={event} />
