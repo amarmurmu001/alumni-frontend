@@ -126,6 +126,7 @@ export const api = {
       return fetchApi(`/events?page=${page}&limit=${limit}`);
     },
     createEvent: (eventData) => fetchApi('/events', { method: 'POST', body: JSON.stringify(eventData) }),
+    getEventDetails: (eventId) => fetchApi(`/events/${eventId}`),
   },
   donations: {
     makeDonation: (donationData) => fetchApi('/donations', { method: 'POST', body: JSON.stringify(donationData) }),
