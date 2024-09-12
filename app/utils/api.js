@@ -37,7 +37,20 @@ export const api = {
       }
       return response.json();
     },
-    // ... other auth methods ...
+    register: async (userData) => {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+      return response.json();
+    },
     logout: async () => {
       try {
         await fetchApi('/auth/logout', { 
