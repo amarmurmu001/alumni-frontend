@@ -10,9 +10,12 @@ export default function EventDetails({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
     fetchEventDetails(params.id);
   }, [params.id]);
 
@@ -31,6 +34,11 @@ export default function EventDetails({ params }) {
   };
 
   const handleRegister = async () => {
+    if (!isLoggedIn) {
+      toast.error('Please log in to register for the event.');
+      return;
+    }
+
     if (event.registrationLink) {
       window.open(event.registrationLink, '_blank');
     } else {
@@ -41,7 +49,11 @@ export default function EventDetails({ params }) {
         await fetchEventDetails(event._id);
       } catch (error) {
         console.error('Error registering for event:', error);
-        toast.error(error.message || 'Failed to register for the event. Please try again.');
+        if (error.message.includes('already registered')) {
+          toast.error('You are already registered for this event.');
+        } else {
+          toast.error(error.message || 'Failed to register for the event. Please try again.');
+        }
       } finally {
         setIsRegistering(false);
       }
