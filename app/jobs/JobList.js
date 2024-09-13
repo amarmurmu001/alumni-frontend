@@ -1,10 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import Link from 'next/link';
 
-export default function JobList({ jobs }) {
+export default function JobList() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await api.jobs.getJobs();
+      setJobs(data || []);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      setError('Failed to fetch jobs. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="text-white">Loading jobs...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
+  if (jobs.length === 0) {
+    return <div className="text-white text-center mt-8">No jobs available at the moment.</div>;
+  }
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {jobs.map((job) => (

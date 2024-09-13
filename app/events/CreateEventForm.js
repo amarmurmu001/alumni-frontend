@@ -10,6 +10,8 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
     date: '',
     location: '',
     description: '',
+    registrationLink: '', // Add this line
+    maxAttendees: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,6 +28,7 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
     setError('');
     
     try {
+      console.log('Submitting event data:', eventData); // Add this log
       const createdEvent = await api.events.createEvent(eventData);
       console.log('Event created:', createdEvent);
       onEventCreated();
@@ -94,6 +97,28 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
               className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             ></textarea>
+          </div>
+          <div>
+            <label htmlFor="registrationLink" className="block text-sm font-medium text-gray-300 mb-1">Registration Link (optional)</label>
+            <input
+              type="url"
+              id="registrationLink"
+              name="registrationLink"
+              value={eventData.registrationLink}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="maxAttendees" className="block text-sm font-medium text-gray-300 mb-1">Maximum Attendees (optional)</label>
+            <input
+              type="number"
+              id="maxAttendees"
+              name="maxAttendees"
+              value={eventData.maxAttendees}
+              onChange={handleChange}
+              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
           
           {error && <p className="text-red-500 text-sm">{error}</p>}

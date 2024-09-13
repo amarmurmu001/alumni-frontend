@@ -125,8 +125,14 @@ export const api = {
     getEvents: async ({ page, limit }) => {
       return fetchApi(`/events?page=${page}&limit=${limit}`);
     },
-    createEvent: (eventData) => fetchApi('/events', { method: 'POST', body: JSON.stringify(eventData) }),
+    createEvent: (eventData) => fetchApi('/events', { 
+      method: 'POST', 
+      body: JSON.stringify(eventData) 
+    }),
     getEventDetails: (eventId) => fetchApi(`/events/${eventId}`),
+    registerForEvent: async (eventId) => {
+      return fetchApi(`/events/${eventId}/register`, { method: 'POST' });
+    },
   },
   donations: {
     makeDonation: (donationData) => fetchApi('/donations', { method: 'POST', body: JSON.stringify(donationData) }),

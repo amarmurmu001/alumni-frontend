@@ -36,6 +36,10 @@ export default function EventList() {
   if (loading) return <div className="text-white">Loading events...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
+  if (events.length === 0) {
+    return <div className="text-white text-center mt-8">No events available at the moment.</div>;
+  }
+
   return (
     <div className="min-h-screen p-4">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
