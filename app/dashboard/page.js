@@ -102,7 +102,7 @@ export default function Dashboard() {
           >
             Welcome back, {user?.firstName || 'Alumni'}!
           </motion.h1>
-          <p className="text-gray-400">Here's what's happening in your alumni network</p>
+          <p className="text-gray-400">Here&apos;s what&apos;s happening in your alumni network</p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
