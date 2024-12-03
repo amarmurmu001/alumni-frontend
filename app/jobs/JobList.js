@@ -3,11 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function JobList() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchJobs();
@@ -27,80 +30,102 @@ export default function JobList() {
     }
   };
 
-  if (loading) return <div className="text-white">Loading jobs...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-
-  if (jobs.length === 0) {
-    return <div className="text-white text-center mt-8">No jobs available at the moment.</div>;
-  }
+  const filteredJobs = jobs.filter(job => {
+    const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         job.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    if (filter === 'all') return matchesSearch;
+    return matchesSearch && job.type === filter;
+  });
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {jobs.map((job) => (
-        <JobCard key={job._id} job={job} />
-      ))}
+    <div>
+      <div className="mb-8 space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <input
+            type="text"
+            placeholder="Search jobs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 px-4 py-2 bg-transparent border border-gray-800 rounded-lg focus:outline-none focus:border-white text-white placeholder-gray-500"
+          />
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="px-4 py-2 bg-transparent border border-gray-800 rounded-lg focus:outline-none focus:border-white text-white"
+          >
+            <option value="all">All Types</option>
+            <option value="full-time">Full Time</option>
+            <option value="part-time">Part Time</option>
+            <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
+          </select>
+        </div>
+      </div>
+
+      {filteredJobs.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">No jobs found matching your criteria.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredJobs.map((job, index) => (
+            <JobCard key={job._id} job={job} index={index} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function JobCard({ job }) {
-  const [detailedJob, setDetailedJob] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const fetchJobDetails = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const details = await api.jobs.getJobDetails(job._id);
-      setDetailedJob(details);
-    } catch (err) {
-      console.error('Error fetching job details:', err);
-      setError('Failed to fetch job details. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+function JobCard({ job, index }) {
   return (
-    <div className="border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors">
-      <h3 className="text-xl font-bold mb-2 text-white">{job.title}</h3>
-      <p className="text-gray-400 mb-2">{job.company}</p>
-      <p className="text-gray-400 mb-2">{job.location}</p>
-      <p className="text-gray-300 mb-4 line-clamp-3">{job.description}</p>
-      <p className="text-gray-400 mb-2">Salary: {job.salary || 'Not specified'}</p>
-      <p className="text-gray-400 mb-4">
-        Deadline: {job.applicationDeadline ? new Date(job.applicationDeadline).toLocaleDateString() : 'Not specified'}
-      </p>
-      {!detailedJob && !loading && (
-        <button
-          onClick={fetchJobDetails}
-          className="text-blue-500 hover:text-blue-400"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
+      className="group relative bg-black border border-gray-800 rounded-xl p-6 hover:border-white transition-all duration-300"
+    >
+      <div className="flex flex-col h-full">
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-white mb-2">{job.title}</h3>
+          <p className="text-gray-400 mb-2">{job.company}</p>
+          <p className="text-gray-400 mb-2 flex items-center">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {job.location}
+          </p>
+          <p className="text-gray-300 mb-4 line-clamp-3">{job.description}</p>
+          
+          <div className="space-y-2">
+            <p className="text-gray-400">
+              <span className="font-medium text-white">Salary:</span> {job.salary || 'Not specified'}
+            </p>
+            <p className="text-gray-400">
+              <span className="font-medium text-white">Deadline:</span> {' '}
+              {job.applicationDeadline ? new Date(job.applicationDeadline).toLocaleDateString() : 'Not specified'}
+            </p>
+          </div>
+        </div>
+
+        <Link 
+          href={`/jobs/${job._id}`}
+          className="inline-flex items-center mt-4 text-white hover:text-gray-300 font-medium group"
         >
           View Details
-        </button>
-      )}
-      {loading && <p>Loading details...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {detailedJob && (
-        <div>
-          <h4 className="text-lg font-semibold mt-4 mb-2">Detailed Description</h4>
-          <p className="text-gray-300">{detailedJob.detailedDescription || detailedJob.description}</p>
-          {detailedJob.requirements && Array.isArray(detailedJob.requirements) && detailedJob.requirements.length > 0 && (
-            <>
-              <h4 className="text-lg font-semibold mt-4 mb-2">Requirements</h4>
-              <ul className="list-disc list-inside text-gray-300">
-                {detailedJob.requirements.map((req, index) => (
-                  <li key={index}>{req}</li>
-                ))}
-              </ul>
-            </>
-          )}
-          <Link href={`/jobs/${job._id}`} className="text-blue-500 hover:text-blue-400 mt-4 inline-block">
-            Apply Now →
-          </Link>
-        </div>
-      )}
-    </div>
+          <svg 
+            className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </div>
+    </motion.div>
   );
 }

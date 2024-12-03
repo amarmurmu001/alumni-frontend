@@ -1,39 +1,32 @@
-import localFont from "next/font/local";
-import Navigation from "./components/Navigation.js";
-import "./globals.css";
+import localFont from 'next/font/local'
+import Navigation from "./components/Navigation.js"
+import Footer from "./components/Footer.js"
+import './globals.css'
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+  src: './fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+})
 
 export const metadata = {
-  title: "Alumni Association Platform",
-  description: "Connect with your alma mater and fellow alumni",
-};
+  title: 'Alumni Association',
+  description: 'Connect with your alumni network',
+}
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="bg-black">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white flex flex-col min-h-screen`}
-      >
+    <html lang="en" className={`${geistSans.variable} bg-black`}>
+      <body className="min-h-screen flex flex-col antialiased text-white">
         <header>
           <Navigation />
         </header>
         <main className="flex-grow container mx-auto px-6 py-8">
           {children}
         </main>
-        <footer className="border-t border-gray-800 text-center py-6 text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Alumni Association Platform. All rights reserved.</p>
+        <footer>
+          <Footer />
         </footer>
       </body>
     </html>
-  );
+  )
 }

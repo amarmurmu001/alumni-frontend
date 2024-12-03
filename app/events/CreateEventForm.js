@@ -46,95 +46,124 @@ export default function CreateEventForm({ onClose, onEventCreated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-black p-8 rounded-lg max-w-md w-full border border-gray-800">
-        <h2 className="text-3xl font-bold mb-6 text-white">Create New Event</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-1">Event Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={eventData.title}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
+    <div className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-black/90 border border-gray-800 rounded-xl shadow-xl max-w-2xl w-full mx-4 p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-bold text-white">Create New Event</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">Event Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={eventData.title}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  placeholder-gray-500 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="date" className="block text-sm font-medium text-gray-300 mb-2">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={eventData.date}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  placeholder-gray-500 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-2">Location</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={eventData.location}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  placeholder-gray-500 transition-all"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="maxAttendees" className="block text-sm font-medium text-gray-300 mb-2">Maximum Attendees</label>
+              <input
+                type="number"
+                id="maxAttendees"
+                name="maxAttendees"
+                value={eventData.maxAttendees}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  placeholder-gray-500 transition-all"
+              />
+            </div>
           </div>
+          
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-300 mb-1">Date</label>
-            <input
-              type="date"
-              id="date"
-              name="date"
-              value={eventData.date}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1">Location</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={eventData.location}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300 mb-2">Description</label>
             <textarea
               id="description"
               name="description"
               value={eventData.description}
               onChange={handleChange}
               rows="4"
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                placeholder-gray-500 transition-all resize-none"
               required
             ></textarea>
           </div>
+
           <div>
-            <label htmlFor="registrationLink" className="block text-sm font-medium text-gray-300 mb-1">Registration Link (optional)</label>
+            <label htmlFor="registrationLink" className="block text-sm font-medium text-gray-300 mb-2">Registration Link (optional)</label>
             <input
               type="url"
               id="registrationLink"
               name="registrationLink"
               value={eventData.registrationLink}
               onChange={handleChange}
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="maxAttendees" className="block text-sm font-medium text-gray-300 mb-1">Maximum Attendees (optional)</label>
-            <input
-              type="number"
-              id="maxAttendees"
-              name="maxAttendees"
-              value={eventData.maxAttendees}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-black border border-gray-800 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 bg-black/50 border border-gray-800 rounded-lg text-white 
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                placeholder-gray-500 transition-all"
             />
           </div>
           
           {error && <p className="text-red-500 text-sm">{error}</p>}
           
-          <div className="flex justify-end space-x-3 mt-6">
+          <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-300 bg-black border border-gray-800 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-6 py-3 text-sm font-medium text-gray-300 hover:text-white 
+                bg-black/50 border border-gray-800 rounded-lg hover:border-gray-600 
+                transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
               disabled={isLoading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-6 py-3 text-sm font-medium text-black bg-white 
+                rounded-lg hover:bg-gray-100 transition-colors
+                focus:outline-none focus:ring-2 focus:ring-white
+                disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? 'Creating...' : 'Create Event'}

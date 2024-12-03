@@ -135,14 +135,22 @@ export const api = {
     },
   },
   donations: {
-    makeDonation: (donationData) => fetchApi('/donations', { method: 'POST', body: JSON.stringify(donationData) }),
+    createOrder: (donationData) => fetchApi('/donations/create-order', {
+      method: 'POST',
+      body: JSON.stringify(donationData)
+    }),
+    verifyPayment: (paymentData) => fetchApi('/donations/verify-payment', {
+      method: 'POST',
+      body: JSON.stringify(paymentData)
+    }),
     getDonationProgress: async () => {
       try {
         return await fetchApi('/donations/progress');
       } catch (error) {
         console.error('Failed to fetch donation progress:', error);
-        return { total: 0, goal: 0 }; // Return default values if the endpoint is not available
+        return { total: 0, goal: 0 };
       }
     },
+    getDonationHistory: () => fetchApi('/donations/history'),
   },
 };
