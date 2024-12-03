@@ -8,23 +8,23 @@ import { api } from './utils/api';
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] min-h-screen gap-16 font-[family-name:var(--font-geist-sans)] bg-black">
-      <main className="flex flex-col gap-16 items-center px-8 py-16">
+    <div className="min-h-screen bg-black">
+      <main className="flex flex-col items-center py-8 md:py-16 space-y-12 md:space-y-16">
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-3xl"
+          className="text-center max-w-3xl px-4"
         >
           <motion.h1 
-            className="text-6xl font-bold mb-4 text-white"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white"
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
             Welcome to the Alumni Association Platform
           </motion.h1>
           <motion.p 
-            className="text-xl text-white/60 mb-8"
+            className="text-lg md:text-xl text-white/60 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -37,7 +37,7 @@ export default function Home() {
           >
             <Link
               href="/auth"
-              className="rounded-full bg-white text-black font-bold py-3 px-8 
+              className="rounded-full bg-white text-black font-bold py-2 px-6 md:py-3 md:px-8 
                 transition-all duration-300 hover:bg-white/90"
             >
               Join Now
@@ -49,9 +49,9 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-6xl flex justify-center"
+          className="w-full max-w-6xl flex justify-center px-4"
         >
-          <div className="relative h-[435px] w-[1000px] rounded-xl border border-gray-800">
+          <div className="relative w-full aspect-video max-w-[1000px] rounded-xl border border-gray-800">
             <Image
               src="/screen.png"
               alt="Alumni Association Platform Screenshot"
@@ -64,7 +64,7 @@ export default function Home() {
         </motion.section>
 
         <motion.section 
-          className="grid md:grid-cols-3 gap-8 w-full max-w-5xl"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-5xl px-4"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, staggerChildren: 0.2 }}
@@ -83,20 +83,21 @@ export default function Home() {
             title="Make a Donation"
             description="Support your alma mater and contribute to its growth and development."
             link="/donations"
+            className="sm:col-span-2 md:col-span-1"
           />
         </motion.section>
 
         <motion.section 
-          className="text-center max-w-3xl"
+          className="text-center max-w-3xl px-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl font-bold mb-6 text-white">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
             Why Join Our Alumni Network?
           </h2>
           <motion.ul 
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 text-left"
             variants={{
               hidden: { opacity: 0 },
               show: {
@@ -122,7 +123,7 @@ export default function Home() {
   );
 }
 
-function FeatureCard({ title, description, link }) {
+function FeatureCard({ title, description, link, className }) {
   const getIcon = (title) => {
     switch (title) {
       case "Upcoming Events":
@@ -139,8 +140,8 @@ function FeatureCard({ title, description, link }) {
   return (
     <motion.div 
       whileHover={{ scale: 1.03, y: -5 }}
-      className="border border-white/10 rounded-lg p-6 hover:border-white/20 transition-colors
-        bg-white/5 backdrop-blur-sm"
+      className={`border border-white/10 rounded-lg p-6 hover:border-white/20 transition-colors
+        bg-white/5 backdrop-blur-sm ${className}`}
     >
       <div className="mb-4">
         {getIcon(title)}
