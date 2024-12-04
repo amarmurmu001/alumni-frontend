@@ -13,19 +13,109 @@
 - Benefits section highlighting key advantages
 - Clean, minimalist design with dark theme
 
+### Footer
+- Responsive layout with mobile-first approach
+- Stacked layout on mobile, horizontal on larger screens
+- Components:
+  - Creator credits with social links
+  - GitHub integration
+  - Responsive text sizing
+  - Proper spacing and alignment
+- Features:
+  - Text center-aligned on mobile, left-aligned on desktop
+  - Flexible container with proper padding
+  - Smooth hover transitions
+  - Accessible link targets
+  - Proper contrast ratios
+- Technical Implementation:
+  ```jsx
+  // Mobile-first classes
+  "flex flex-col sm:flex-row"          // Stack on mobile, row on desktop
+  "text-center sm:text-left"           // Center on mobile, left on desktop
+  "text-sm md:text-base"               // Smaller text on mobile
+  "py-4 md:py-6"                       // Adjusted padding for screen sizes
+  "whitespace-nowrap"                  // Prevent text wrapping
+  ```
+- Accessibility Features:
+  - ARIA labels for social links
+  - Sufficient touch targets (min 44px)
+  - High contrast text
+  - Proper link underlines
+
 ### Donation System
 - Razorpay payment gateway integration
 - Support for both anonymous and authenticated donations
 - Real-time donation progress tracking
 - Minimum donation amount: ₹100
-- User information collection:
-  - Name (required for non-anonymous)
-  - Email (required for non-anonymous)
-  - Phone (optional)
-  - Anonymous donation option
+
+#### UI Components
+1. Form Container:
+   - Clean black background
+   - Subtle white border (10% opacity)
+   - Rounded corners (xl)
+   - Responsive padding (p-6 on mobile, p-8 on desktop)
+   - Entrance animation with fade and slide
+
+2. Input Fields:
+   ```css
+   // Base styling
+   "bg-black border border-white/10 rounded-lg"
+   "pl-10 pr-4 py-3"                    // Padding for icon and text
+   "text-white placeholder-gray-500"     // Text colors
+   
+   // Focus state
+   "focus:outline-none"
+   "focus:ring-1 focus:ring-white"
+   "focus:border-white"
+   ```
+
+3. Anonymous Toggle:
+   - Custom toggle switch design
+   - White indicator dot
+   - Gray background track
+   - Smooth transition animation
+
+4. Form Elements:
+   - Leading icons for all inputs
+   - Proper spacing between elements
+   - Clear visual hierarchy
+   - Responsive text sizing
+
+5. Submit Button:
+   ```css
+   // Active state
+   "bg-white text-black"
+   "hover:bg-white/90"
+   
+   // Disabled state
+   "bg-white/10 text-white/50"
+   "cursor-not-allowed"
+   ```
+
+6. Loading States:
+   - Custom spinner animation
+   - White border with transparent track
+   - Centered loading text
+   - Smooth transitions
+
+7. Messages:
+   - Consistent border style
+   - White text for readability
+   - Fade-in animation
+   - Clear visual feedback
+
+#### User Information Collection:
+- Name (required for non-anonymous)
+- Email (required for non-anonymous)
+- Phone (optional)
+- Anonymous donation option
+
+#### Technical Features:
 - Payment verification and security
 - Donation history tracking
 - Progress bar showing total donations vs goal
+- Smooth animations using Framer Motion
+- Responsive design for all screen sizes
 
 ### Navigation & Layout
 - Responsive grid layout
@@ -33,13 +123,6 @@
 - Font: Geist Sans
 - Dark theme with blue accents
 - Smooth page transitions
-
-### Footer
-- Clean, minimal footer design
-- Creator credits with social links
-- GitHub integration
-- Responsive layout with proper spacing
-- Dark theme compatible
 
 ### Visual Elements
 - Custom icons for features (HeroIcons)
