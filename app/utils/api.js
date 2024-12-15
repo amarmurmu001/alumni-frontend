@@ -122,8 +122,32 @@ export const api = {
     getJobDetails: (jobId) => fetchApi(`/jobs/${jobId}`),
   },
   events: {
-    getEvents: async ({ page, limit }) => {
-      return fetchApi(`/events?page=${page}&limit=${limit}`);
+    getEvents: async ({ page = 1, limit = 10 }) => {
+      try {
+        const response = await fetchApi(`/events?page=${page}&limit=${limit}`);
+        if (Array.isArray(response)) {
+          return {
+            events: response,
+            totalPages: Math.ceil(response.length / limit)
+          };
+        }
+        if (response.events) {
+          return {
+            events: response.events,
+            totalPages: response.totalPages || Math.ceil(response.events.length / limit)
+          };
+        }
+        return {
+          events: [],
+          totalPages: 0
+        };
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        return {
+          events: [],
+          totalPages: 0
+        };
+      }
     },
     createEvent: (eventData) => fetchApi('/events', { 
       method: 'POST', 

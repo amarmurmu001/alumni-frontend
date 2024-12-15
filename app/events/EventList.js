@@ -23,26 +23,27 @@ export default function EventList() {
     try {
       const data = await api.events.getEvents({
         page,
-        limit: 10,
-        sortBy: 'date',
-        sortOrder: 'asc'
+        limit: 10
       });
+
+      console.log('Events API Response:', data); // Debug log
+
+      // Get current date at start of day
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
 
       // Filter out past events
-      const now = new Date();
-      now.setHours(0, 0, 0, 0); // Set to start of day for fair comparison
-      
-      const upcomingEvents = (data.events || []).filter(event => {
+      const upcomingEvents = data.events.filter(event => {
         const eventDate = new Date(event.date);
-        eventDate.setHours(0, 0, 0, 0); // Set to start of day for fair comparison
-        return eventDate >= now;
-      });
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() >= now.getTime();
+      }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      console.log('Current date:', now); // Debug log
+      console.log('Filtered Upcoming Events:', upcomingEvents); // Debug log
 
       setEvents(upcomingEvents);
-      // Adjust total pages based on filtered events count
-      const totalUpcomingEvents = upcomingEvents.length;
-      const calculatedTotalPages = Math.ceil(totalUpcomingEvents / 10);
-      setTotalPages(calculatedTotalPages || 1);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching events:', error);
       setError('Failed to fetch events. Please try again later.');

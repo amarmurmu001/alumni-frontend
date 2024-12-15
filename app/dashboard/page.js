@@ -19,10 +19,10 @@ export default function Dashboard() {
     const fetchFeedData = async () => {
       try {
         const [eventsData, jobsData, userData] = await Promise.all([
-          api.events.getEvents({ page: 1, limit: 5, sortBy: 'date', sortOrder: 'asc' })
+          api.events.getEvents({ page: 1, limit: 0 })
             .catch(() => ({ events: [], totalPages: 0 })),
-          api.jobs.getJobs({ limit: 5 })
-            .catch(() => ({ data: [] })),
+          api.jobs.getJobs()
+            .catch(() => []),
           api.user.getProfile().catch(error => {
             if (error.message === 'Unauthorized') {
               router.push('/auth');
@@ -33,18 +33,27 @@ export default function Dashboard() {
         ]);
 
         if (userData) {
+          console.log('Raw events data:', eventsData); // Debug log
+
+          // Get current date at start of day
           const now = new Date();
-          now.setHours(0, 0, 0, 0); // Set to start of day for fair comparison
-          
+          now.setHours(0, 0, 0, 0);
+          console.log('Current date:', now); // Debug log
+
+          // Filter upcoming events directly from the response
           const upcomingEvents = eventsData.events.filter(event => {
             const eventDate = new Date(event.date);
-            eventDate.setHours(0, 0, 0, 0); // Set to start of day for fair comparison
-            return eventDate >= now;
-          });
+            eventDate.setHours(0, 0, 0, 0);
+            const isUpcoming = eventDate.getTime() >= now.getTime();
+            console.log('Event:', event.title, 'Date:', eventDate, 'Is Upcoming:', isUpcoming); // Debug each event
+            return isUpcoming;
+          }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+          console.log('Upcoming Events:', upcomingEvents); // Debug log
 
           setFeedData({
-            events: upcomingEvents,
-            jobs: Array.isArray(jobsData) ? jobsData : []
+            events: upcomingEvents.slice(0, 5), // Show only 5 nearest upcoming events
+            jobs: Array.isArray(jobsData) ? jobsData.slice(0, 5) : [] // Show only 5 latest jobs
           });
           setUser(userData);
         }
@@ -114,10 +123,10 @@ export default function Dashboard() {
               icon={<HiOutlineCalendar className="w-5 h-5" />}
               viewAllLink="/events"
             >
-              {feedData.events.length > 0 ? (
+              {feedData.events && feedData.events.length > 0 ? (
                 feedData.events.map((event, index) => (
                   <FeedCard
-                    key={event._id || index}
+                    key={event._id}
                     href={`/events/${event._id}`}
                     delay={index * 0.1}
                   >
@@ -125,12 +134,12 @@ export default function Dashboard() {
                       <div className="bg-white/5 rounded-lg p-3">
                         <HiOutlineCalendar className="w-6 h-6 text-white" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-white mb-1">{event.title}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-white mb-1 truncate">{event.title}</h3>
                         <p className="text-gray-400 text-sm mb-2 line-clamp-2">{event.description}</p>
                         <div className="flex items-center text-sm text-gray-500">
                           <HiOutlineLocationMarker className="w-4 h-4 mr-1" />
-                          <span>{event.location}</span>
+                          <span className="truncate">{event.location}</span>
                           <span className="mx-2">•</span>
                           <span>{new Date(event.date).toLocaleDateString()}</span>
                         </div>
@@ -282,20 +291,22 @@ export default function Dashboard() {
 
 function FeedSection({ title, icon, viewAllLink, children }) {
   return (
-    <div className="bg-white/5 backdrop-blur-sm border border-gray-800 rounded-xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          {icon}
-          <h2 className="text-lg font-semibold text-white">{title}</h2>
+    <div className="bg-white/5 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden">
+      <div className="p-6 border-b border-gray-800">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <div className="text-white">{icon}</div>
+            <h2 className="text-lg font-semibold text-white">{title}</h2>
+          </div>
+          <Link
+            href={viewAllLink}
+            className="text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            View All
+          </Link>
         </div>
-        <Link
-          href={viewAllLink}
-          className="text-sm text-gray-400 hover:text-white transition-colors"
-        >
-          View All
-        </Link>
       </div>
-      <div className="space-y-4">
+      <div className="divide-y divide-gray-800">
         {children}
       </div>
     </div>
@@ -309,10 +320,8 @@ function FeedCard({ href, delay = 0, children }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
     >
-      <Link href={href}>
-        <div className="p-4 rounded-lg hover:bg-white/5 transition-colors">
-          {children}
-        </div>
+      <Link href={href} className="block p-6 hover:bg-white/5 transition-colors">
+        {children}
       </Link>
     </motion.div>
   );
