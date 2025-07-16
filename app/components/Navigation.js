@@ -20,15 +20,26 @@ export default function Navigation() {
     // Check immediately
     checkLoginState();
 
-    // Listen for storage changes
+    // Check on route changes
+    const handleRouteChange = () => {
+      checkLoginState();
+    };
+
+    // Listen for storage and route changes
     window.addEventListener('storage', checkLoginState);
     window.addEventListener('login', checkLoginState);
     window.addEventListener('logout', checkLoginState);
+    window.addEventListener('popstate', handleRouteChange);
+
+    // Check every 1 second for token changes
+    const intervalCheck = setInterval(checkLoginState, 1000);
 
     return () => {
       window.removeEventListener('storage', checkLoginState);
       window.removeEventListener('login', checkLoginState);
       window.removeEventListener('logout', checkLoginState);
+      window.removeEventListener('popstate', handleRouteChange);
+      clearInterval(intervalCheck);
     };
   }, []);
 
@@ -48,18 +59,28 @@ export default function Navigation() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleLogout = () => {
-    // Clear the token and username from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    // Update login state immediately
-    setIsLoggedIn(false);
-    // Dispatch logout event
-    window.dispatchEvent(new Event('logout'));
-    // Close mobile menu if open
-    setIsMobileMenuOpen(false);
-    // Redirect to the auth page
-    router.push('/auth');
+  const handleLogout = async () => {
+    try {
+      // Update login state immediately first
+      setIsLoggedIn(false);
+      
+      // Clear storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      
+      // Dispatch logout event
+      window.dispatchEvent(new Event('logout'));
+      
+      // Close mobile menu if open
+      setIsMobileMenuOpen(false);
+      
+      // Redirect to the auth page
+      await router.push('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Recheck login state in case of error
+      setIsLoggedIn(!!localStorage.getItem('token'));
+    }
   };
 
   const menuItems = [
