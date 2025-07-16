@@ -7,15 +7,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Fetch the username from localStorage or your state management solution
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
+    // Check initial login state
+    const checkLoginState = () => {
+      const token = localStorage.getItem('token');
+      setIsLoggedIn(!!token);
+    };
+
+    // Check immediately
+    checkLoginState();
+
+    // Listen for storage changes
+    window.addEventListener('storage', checkLoginState);
+    window.addEventListener('login', checkLoginState);
+    window.addEventListener('logout', checkLoginState);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginState);
+      window.removeEventListener('login', checkLoginState);
+      window.removeEventListener('logout', checkLoginState);
+    };
   }, []);
 
   // Prevent background scrolling when mobile menu is open
@@ -38,9 +52,13 @@ export default function Navigation() {
     // Clear the token and username from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    // Update login state immediately
+    setIsLoggedIn(false);
+    // Dispatch logout event
+    window.dispatchEvent(new Event('logout'));
     // Close mobile menu if open
     setIsMobileMenuOpen(false);
-    // Redirect to the login page
+    // Redirect to the auth page
     router.push('/auth');
   };
 
@@ -68,18 +86,24 @@ export default function Navigation() {
                 </Link>
               </li>
             ))}
-            {username && (
-              <>
-                <li className="text-white">Welcome, {username}</li>
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
+            {!isLoggedIn ? (
+              <li>
+                <button className='text-gray-300 hover:text-white' onClick={()=>{
+                  router.push('/auth');
+                }}>Login</button>
+              </li>
+            ) : (
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h5a1 1 0 1 0 0-2H4V5h4a1 1 0 1 0 0-2H3zm12.293 2.293a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 0 1 0-1.414z" clipRule="evenodd"/>
+                  </svg>
+                  Logout
+                </button>
+              </li>
             )}
           </ul>
 
@@ -153,13 +177,15 @@ export default function Navigation() {
                   </ul>
                 </div>
                 
-                {username && (
+                {isLoggedIn && (
                   <div className="border-t border-gray-800 px-6 py-8">
-                    <div className="text-white text-lg mb-4">Welcome, {username}</div>
                     <button
                       onClick={handleLogout}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2"
                     >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M3 3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h5a1 1 0 1 0 0-2H4V5h4a1 1 0 1 0 0-2H3zm12.293 2.293a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 0 1 0-1.414z" clipRule="evenodd"/>
+                      </svg>
                       Logout
                     </button>
                   </div>
