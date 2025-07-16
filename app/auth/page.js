@@ -212,6 +212,18 @@ export default function Auth() {
         </div>
         {isLogin && (
           <div className="text-center mt-4">
+            <div className="mt-2 text-sm text-gray-500">
+              <div>
+                <span className="font-semibold">Test ID:</span> iron57441@gmail.com
+              </div>
+              <div>
+                <span className="font-semibold">Password:</span> 1234
+              </div>
+            </div>
+          </div>
+        )}
+        {/* {isLogin && (
+          <div className="text-center mt-4">
             <button
               onClick={handleForgotPassword}
               className="font-medium text-blue-600 hover:text-blue-500"
@@ -219,7 +231,7 @@ export default function Auth() {
               Forgot password?
             </button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
