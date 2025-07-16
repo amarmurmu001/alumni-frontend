@@ -36,7 +36,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-1 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function ProfilePage() {
             >
               {profile?.firstName} {profile?.lastName}
             </motion.h1>
-            <p className="text-gray-400">Member since {new Date(profile?.createdAt).getFullYear()}</p>
+            
           </div>
           <motion.button
             whileHover={{ scale: 1.02 }}
