@@ -71,7 +71,6 @@ export default function Events() {
               <CreateEventButton 
                 onEventCreated={handleEventCreated}
                 onClose={() => setShowCreateForm(false)}
-                showFormDirectly={true}
               />
             </div>
           </motion.div>
