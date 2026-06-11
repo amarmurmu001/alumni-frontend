@@ -83,7 +83,7 @@ export const api = {
   user: {
     getProfile: async () => {
       try {
-        const response = await fetch('/api/user/profile', {
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -101,7 +101,7 @@ export const api = {
       }
     },
     updateProfile: async (userData) => {
-      const response = await fetch('/api/user/profile', {
+      const response = await fetch(`${API_BASE_URL}/user/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
