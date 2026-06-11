@@ -245,10 +245,17 @@ export default function CreateJobForm({ onJobCreated, onClose }) {
           ) : (
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
-              {isLoading ? 'Creating...' : 'Create Job'}
+              {isLoading ? (
+                <span className="flex items-center">
+                  <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin mr-2"></span>
+                  Creating...
+                </span>
+              ) : (
+                'Create Job'
+              )}
             </button>
           )}
         </div>
