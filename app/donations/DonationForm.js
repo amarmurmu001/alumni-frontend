@@ -3,11 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import Script from 'next/script';
-import { useRouter } from 'next/navigation';
-import { HiCurrencyRupee, HiUser, HiMail, HiPhone, HiEye, HiEyeOff } from 'react-icons/hi';
+import { HiCurrencyRupee, HiUser, HiMail, HiPhone } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 
-export default function DonationForm() {
+export default function DonationForm({ onSuccess }) {
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,10 +17,8 @@ export default function DonationForm() {
     phone: '',
     isAnonymous: false
   });
-  const router = useRouter();
 
   useEffect(() => {
-    // Try to get user profile if logged in
     const fetchUserProfile = async () => {
       try {
         const profile = await api.user.getProfile();
@@ -31,7 +28,6 @@ export default function DonationForm() {
           email: profile.email
         }));
       } catch (error) {
-        // User not logged in or error fetching profile
         console.log('User not logged in or error fetching profile');
       }
     };
@@ -61,7 +57,6 @@ export default function DonationForm() {
         return;
       }
 
-      // Create order with user information
       const { orderId } = await api.donations.createOrder({
         amount: parseFloat(amount),
         userInfo: {
@@ -70,17 +65,15 @@ export default function DonationForm() {
         }
       });
 
-      // Initialize Razorpay options
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: amount * 100, // amount in paisa
+        amount: amount * 100,
         currency: "INR",
         name: "Alumni Association",
         description: "Donation to Alumni Association",
         order_id: orderId,
         handler: async function (response) {
           try {
-            // Verify payment with user information
             await api.donations.verifyPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -91,12 +84,9 @@ export default function DonationForm() {
                 isAnonymous: userInfo.isAnonymous
               }
             });
-            
             setMessage('Thank you for your donation!');
             setAmount('');
-            
-            // Refresh the donation progress
-            router.refresh();
+            if (onSuccess) onSuccess();
           } catch (err) {
             setError('Payment verification failed. Please contact support if amount was deducted.');
           }
@@ -144,7 +134,6 @@ export default function DonationForm() {
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 text-center">Make a Donation</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Amount Input */}
             <div className="relative">
               <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-2">
                 Donation Amount
@@ -169,7 +158,6 @@ export default function DonationForm() {
               </div>
             </div>
 
-            {/* Anonymous Toggle */}
             <div className="border border-white/10 rounded-lg p-4">
               <label className="flex items-center justify-between cursor-pointer">
                 <span className="text-sm text-gray-300">Make this donation anonymous</span>
@@ -190,7 +178,6 @@ export default function DonationForm() {
               </label>
             </div>
 
-            {/* User Information */}
             {!userInfo.isAnonymous && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -199,68 +186,45 @@ export default function DonationForm() {
                 className="space-y-4"
               >
                 <div className="relative">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                    Full Name
-                  </label>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <HiUser className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={userInfo.name}
-                      onChange={handleInputChange}
+                      type="text" id="name" name="name" value={userInfo.name} onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 bg-black border border-white/10 rounded-lg text-white 
-                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white
-                        placeholder-gray-500 transition-all"
-                      required={!userInfo.isAnonymous}
-                      placeholder="Your full name"
+                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white placeholder-gray-500 transition-all"
+                      required={!userInfo.isAnonymous} placeholder="Your full name"
                     />
                   </div>
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                    Email Address
-                  </label>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <HiMail className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={userInfo.email}
-                      onChange={handleInputChange}
+                      type="email" id="email" name="email" value={userInfo.email} onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 bg-black border border-white/10 rounded-lg text-white 
-                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white
-                        placeholder-gray-500 transition-all"
-                      required={!userInfo.isAnonymous}
-                      placeholder="your@email.com"
+                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white placeholder-gray-500 transition-all"
+                      required={!userInfo.isAnonymous} placeholder="your@email.com"
                     />
                   </div>
                 </div>
 
                 <div className="relative">
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
-                    Phone Number (Optional)
-                  </label>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone Number (Optional)</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <HiPhone className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={userInfo.phone}
-                      onChange={handleInputChange}
+                      type="tel" id="phone" name="phone" value={userInfo.phone} onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-3 bg-black border border-white/10 rounded-lg text-white 
-                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white
-                        placeholder-gray-500 transition-all"
+                        focus:outline-none focus:ring-1 focus:ring-white focus:border-white placeholder-gray-500 transition-all"
                       placeholder="+91 1234567890"
                     />
                   </div>
@@ -268,28 +232,18 @@ export default function DonationForm() {
               </motion.div>
             )}
 
-            {/* Error and Success Messages */}
             {error && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="border border-white/10 rounded-lg p-4"
-              >
-                <p className="text-white text-sm">{error}</p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border border-white/10 rounded-lg p-4">
+                <p className="text-red-400 text-sm">{error}</p>
               </motion.div>
             )}
             
             {message && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="border border-white/10 rounded-lg p-4"
-              >
-                <p className="text-white text-sm">{message}</p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border border-white/10 rounded-lg p-4">
+                <p className="text-green-400 text-sm">{message}</p>
               </motion.div>
             )}
 
-            {/* Submit Button */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.01 }}
